@@ -1,0 +1,28 @@
+
+.libraryContainer {
+    padding: 10px 20px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    .title{
+        margin: 9px;
+    }
+    .shapeContainer {
+        margin: 20px auto;
+        cursor: grab;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        position: relative;
+      }
+      
+      .shapeSvg {
+        width: 100%;
+        height: 100%;
+      }
+      
+  }
+  
+ 

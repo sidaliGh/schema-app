@@ -1,0 +1,18 @@
+
+.menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 10px;
+    z-index: 1000;
+  }
+  
+  .menuItem {
+    padding: 5px 10px;
+    cursor: pointer;
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+  

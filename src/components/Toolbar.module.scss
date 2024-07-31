@@ -1,0 +1,36 @@
+
+.toolbarContainer {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .toolbarButton {
+    padding: 8px 15px;
+    color: white;
+    background-color: #383838;
+    border: 0;
+    border-radius: 5px;
+  }
+  
+  .colorPreview {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: var(--color); 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .colorPickerContainer {
+    position: absolute;
+    z-index: 2;
+    top: 50px;
+    right: 50px;
+  }
+  

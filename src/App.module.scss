@@ -1,0 +1,17 @@
+
+.appContainer {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .mainContent {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+  
+  .workspace {
+    display: flex;
+    flex: 1;
+  }
+  

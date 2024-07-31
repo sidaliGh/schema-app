@@ -1,0 +1,33 @@
+
+.rightTabContainer {
+    padding: 10px;
+    border-left: 1px solid #ddd;
+    width: 250px;
+
+    .topContainer{
+        .inputContainer{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        .sizeInput{
+            width: 100px;
+        }
+    }}
+
+    .bottomContainer{
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        .textInput {
+            width: 100%;
+            margin-top: 10px;
+            padding: 5px;
+            box-sizing: border-box;
+          }
+          
+    
+      }
+  }
+  
+
+
+ 
