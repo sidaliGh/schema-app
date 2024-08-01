@@ -5,6 +5,7 @@
     border: 1px solid #ddd;
     position: relative;
     overflow: hidden;
+    min-height: 250vh;
 
     .resizer {
         cursor: nwse-resize;
@@ -14,5 +15,25 @@
         cursor: crosshair;
       }
       
+  }
+
+  .left{
+    width: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .right{
+    flex: 1;
+height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 0 0 0 5px;
+    border-left: 1px solid white;
   }
   

@@ -9,19 +9,34 @@
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
+        .inputContainer{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            label{
+                font-size: 13px;
+            }
+        }
         .sizeInput{
-            width: 100px;
+            width: 90px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid gray;
+            
         }
     }}
 
     .bottomContainer{
         margin-top: 20px;
         border-top: 1px solid #ddd;
+    
         .textInput {
             width: 100%;
-            margin-top: 10px;
-            padding: 5px;
+            padding: 5px 10px;
             box-sizing: border-box;
+            border: 1px solid gray;
+            border-radius: 6px;
           }
           
     

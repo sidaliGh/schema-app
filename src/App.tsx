@@ -1,78 +1,70 @@
-import React, { useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import ShapeLibrary from './components/ShapeLibrary';
-import DrawingArea from './components/DrawingArea';
-import Toolbar from './components/Toolbar';
-import RightTab from './components/RightTab';
-import { useStyle } from './context/StyleContext';
-import styles from './App.module.scss';
+import React, { useRef, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import ShapeLibrary from './components/ShapeLibrary'
+import DrawingArea from './components/DrawingArea'
+import Toolbar from './components/Toolbar'
+import RightTab from './components/RightTab'
+import { useStyle } from './context/StyleContext'
+import styles from './App.module.scss'
+import { Shape, ShapeProperties } from './types/types'
 
-interface Shape {
-  id: string;
-  shape: string;
-  x: number;
-  y: number;
-  text?: string;
-}
+
 
 const App: React.FC = () => {
-  const { shapes, setShapes } = useStyle();
-  const [undoStack, setUndoStack] = useState<Shape[][]>([]);
-  const [redoStack, setRedoStack] = useState<Shape[][]>([]);
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const { shapes, setShapes, handleUndo, handleRedo, pushUndo } = useStyle()
+  const canvasRef = useRef<HTMLDivElement>(null)
 
-  const pushUndo = (shapes: Shape[]) => {
-    setUndoStack(prev => [...prev, shapes]);
-    setRedoStack([]); 
-  };
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, shape: string) => {
-    event.dataTransfer.setData('shape', shape);
-  };
+
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    shape: ShapeProperties
+  ) => {
+    const shapeString = JSON.stringify(shape)
+    event.dataTransfer.setData('shape', shapeString)
+  }
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const shape = event.dataTransfer.getData('shape');
-    if (!canvasRef.current) return;
+    event.preventDefault()
+    
+    const shapeString = event.dataTransfer.getData('shape')
+    const shape = JSON.parse(shapeString) as ShapeProperties
+ 
 
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-    const x = event.clientX - canvasRect.left;
-    const y = event.clientY - canvasRect.top;
+    if (!canvasRef.current) return
 
-    pushUndo(shapes); 
-    const newShape: Shape = { id: uuidv4(), shape, x, y };
-    setShapes([...shapes, newShape]);
-  };
+    const canvasRect = canvasRef.current.getBoundingClientRect()
+    const x = event.clientX - canvasRect.left
+    const y = event.clientY - canvasRect.top
 
-  const handleUndo = () => {
-    if (undoStack.length === 0) return;
+    pushUndo(shapes)
+    const newShape: Shape = { id: uuidv4(), shape: shape, x, y }
+    setShapes([...shapes, newShape])
+  }
 
-    const prevShapes = undoStack.pop()!;
-    setRedoStack(prev => [...prev, shapes]);
-    setShapes(prevShapes);
-    setUndoStack(undoStack);
-  };
+  
 
-  const handleRedo = () => {
-    if (redoStack.length === 0) return;
 
-    const nextShapes = redoStack.pop()!;
-    setUndoStack(prev => [...prev, shapes]);
-    setShapes(nextShapes);
-    setRedoStack(redoStack);
-  };
 
   const handleAddText = (text: string) => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current) return
 
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-    const x = canvasRect.width / 2;
-    const y = canvasRect.height / 2;
+    const canvasRect = canvasRef.current.getBoundingClientRect()
+    const x = canvasRect.width / 2
+    const y = canvasRect.height / 2
 
-    pushUndo(shapes); 
-    const newShape: Shape = { id: uuidv4(), shape: 'Text', x, y, text };
-    setShapes([...shapes, newShape]);
-  };
+    pushUndo(shapes)
+    const newShape: Shape = {
+      id: uuidv4(),  x, y, text,
+      shape: {
+        name: '',
+        type: 'Text',
+        color: '',
+        icon: ''
+      }
+    }
+    setShapes([...shapes, newShape])
+  }
 
   return (
     <div className={styles.appContainer}>
@@ -80,12 +72,17 @@ const App: React.FC = () => {
       <div className={styles.mainContent}>
         <Toolbar onUndo={handleUndo} onRedo={handleRedo} />
         <div className={styles.workspace}>
-          <DrawingArea ref={canvasRef} shapes={shapes} onDrop={handleDrop} onShapesChange={setShapes} />
+          <DrawingArea
+            ref={canvasRef}
+            shapes={shapes}
+            onDrop={handleDrop}
+            onShapesChange={setShapes}
+          />
           <RightTab onAddText={handleAddText} />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

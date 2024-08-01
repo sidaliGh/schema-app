@@ -1,20 +1,17 @@
 import React, { useEffect, useRef } from 'react';
-import { SketchPicker } from 'react-color';
 import styles from './ContextMenu.module.scss';
+import { Shape } from '../types/types';
+import { useStyle } from '../context/StyleContext';
 
 interface ContextMenuProps {
   x: number;
   y: number;
-  color: string;
-  onResize: () => void;
-  onChangeColor: (color: string) => void;
-  onRotate: () => void;
+  onDuplicate: (shape: Shape) => void;
   onClose: () => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, color, onResize, onChangeColor, onRotate, onClose }) => {
-  const [showColorPicker, setShowColorPicker] = React.useState<boolean>(false);
-  const [localColor, setLocalColor] = React.useState<string>(color);
+const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onDuplicate, onClose }) => {
+  const {  selectedShape,handleRemoveShape } = useStyle()
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -31,45 +28,30 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, color, onResize, onChan
     };
   }, [onClose]);
 
-  useEffect(() => {
-    setLocalColor(color);
-  }, [color]);
+
 
   return (
-    <div 
-      className={styles.menu} 
-      ref={menuRef} 
-      style={{ left: x, top: y }}
-    >
-      <div 
-        className={styles.menuItem} 
-        onClick={() => { onResize(); onClose(); }}
+    <div className={styles.menu} ref={menuRef} style={{ left: x - 120, top: y - 60 }}>
+   
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          onDuplicate(selectedShape as Shape);
+          onClose();
+        }}
       >
-        Resize
+        Duplicate
       </div>
-      <div 
-        className={styles.menuItem} 
-        onClick={() => { setShowColorPicker(!showColorPicker); }}
+      <div
+        className={styles.menuItem}
+        onClick={() => {
+          handleRemoveShape()
+          onClose();
+        }}
       >
-        Change Color
+        Remove
       </div>
-      {showColorPicker && (
-        <div style={{ marginTop: '10px' }}>
-          <SketchPicker
-            color={localColor}
-            onChangeComplete={(color) => {
-              setLocalColor(color.hex);
-              onChangeColor(color.hex); 
-            }}
-          />
-        </div>
-      )}
-      <div 
-        className={styles.menuItem} 
-        onClick={() => { onRotate(); onClose(); }}
-      >
-        Rotate
-      </div>
+ 
     </div>
   );
 };

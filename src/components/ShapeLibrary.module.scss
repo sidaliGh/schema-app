@@ -1,28 +1,87 @@
-
 .libraryContainer {
-    padding: 10px 20px;
-    border-right: 1px solid #ddd;
+  padding: 10px 5px;
+  border-right: 1px solid #ddd;
+  width: 200px;
+  height: fit-content;
+  .title {
+    margin: 9px 9px 15px 9px;
+  }
+  .parkingSpotsContainer {
     display: flex;
     flex-direction: column;
-    .title{
-        margin: 9px;
+    gap: 5px;
+    margin-bottom: 20px;
+   
+    .title {
+      margin: 9px 9px 20px 9px;
     }
+  }
+  .wasteBinsContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .topContainer{
+      top: 0;
+      margin-left: 9px;
+      position: sticky;
+      background-color: white;
+      min-height: 65px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .title {
+        margin: 0;
+      }
+      .searchInput{
+        max-width: 85%;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1px solid gray;
+      }
+    }
+   
+
     .shapeContainer {
-        margin: 20px auto;
-        cursor: grab;
+      cursor: grab;
+      .left {
+        width: 30px;
+        height: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 60px;
-        height: 60px;
-        position: relative;
       }
-      
-      .shapeSvg {
-        width: 100%;
+      .right {
+        flex: 1;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0 0 0 5px;
+        border-left: 1px solid white;
       }
-      
+    }
+
+    .shapeSvg {
+      width: 100%;
+      height: 100%;
+    }
   }
-  
- 
+
+  .roadContainer{
+
+  }
+}
+.shapeContainer {
+  cursor: grab;
+}
