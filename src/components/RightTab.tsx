@@ -183,7 +183,7 @@ const RightTab: React.FC<RightTabProps> = ({ onAddText }) => {
             {selectedShape.shape.type === 'wasteBin' && (
               <>
                 <div className={styles.inputContainer}>
-                <label >Top Space</label>
+                <label >Move Down</label>
                   <input
                     type='number'
                     className={styles.sizeInput}
@@ -194,7 +194,7 @@ const RightTab: React.FC<RightTabProps> = ({ onAddText }) => {
                   />
                 </div>
                 <div className={styles.inputContainer}>
-                <label>Bottom Space</label>
+                <label>Move Up</label>
                   <input
                     type='number'
                     className={styles.sizeInput}
@@ -280,6 +280,10 @@ const RightTab: React.FC<RightTabProps> = ({ onAddText }) => {
           onKeyPress={handleTextKeyPress}
           placeholder='Enter text and press Enter'
         />
+      </div>
+      <div>
+        <h3>Guide</h3>
+        <p>Press <strong>X</strong> to move just on <strong>Y-Axis</strong> </p>
       </div>
     </div>
   )

@@ -8,6 +8,8 @@ interface StyleContextType {
   undoStack: Shape[][];
   redoStack: Shape[][];
   color: string;
+  postionAsPrevToTop:boolean;
+  postionAsPrevToBottom:boolean;
   setColor: (color: string) => void;
   selectedShape: Shape | null;
   setSelectedShape: (shape: Shape | null) => void;
@@ -23,6 +25,8 @@ interface StyleContextType {
   updateFontSizeSelectedShape: (id: string, fontSize: number) => void;
   updateFontWeightSelectedShape: (id: string, fontWeight: string) => void;
   updateTextColorSelectedShape: (id: string, textColor: string) => void;
+  updatePositionAsPrevToTheTop: (asPrev: boolean) => void;
+  updatePositionAsPrevToTheBottom: (asPrev: boolean) => void;
   onDuplicate: (shape: Shape) => void;
   handleUndo: () => void;
   handleRedo: () => void;
@@ -46,6 +50,8 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [shapes, setShapes] = useState<Shape[]>([]);
   const [undoStack, setUndoStack] = useState<Shape[][]>([]);
   const [redoStack, setRedoStack] = useState<Shape[][]>([]);
+  const [postionAsPrevToTop, setPostionAsPrevToTop] = useState<boolean>(false);
+  const [postionAsPrevToBottom, setPostionAsPrevToBottom] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -195,7 +201,12 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setShapes(newShapes);
     setSelectedShape(null);
   };
-
+  const updatePositionAsPrevToTheTop = (asPrev: boolean) => {
+    setPostionAsPrevToTop(asPrev);
+  };
+  const updatePositionAsPrevToTheBottom = (asPrev: boolean) => {
+    setPostionAsPrevToBottom(asPrev);
+  };
   return (
     <StyleContext.Provider
       value={{
@@ -206,6 +217,8 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         shapes,
         undoStack,
         redoStack,
+        postionAsPrevToTop,
+        postionAsPrevToBottom,
         setShapes,
         updateHeightSelectedShape,
         updateFontSizeSelectedShape,
@@ -221,7 +234,9 @@ export const StyleProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         handleUndo,
         handleRedo,
         pushUndo,
-        handleRemoveShape
+        handleRemoveShape,
+        updatePositionAsPrevToTheTop,
+        updatePositionAsPrevToTheBottom
       }}
     >
       {children}

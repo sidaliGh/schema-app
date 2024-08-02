@@ -1,4 +1,4 @@
-import React, { useEffect, forwardRef } from 'react'
+import React, { useEffect, forwardRef, useRef } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import * as d3 from 'd3'
 import ContextMenu from './ContextMenu'
@@ -12,7 +12,6 @@ import ArrowUpIcon from '../assets/icons/ArrowUpIcon'
 import ArrowUpRightIcon from '../assets/icons/ArrowUpRightIcon'
 import { Shape } from '../types/types'
 
-
 interface DrawingAreaProps {
   shapes: Shape[]
   onDrop: (event: React.DragEvent<HTMLDivElement>) => void
@@ -22,11 +21,13 @@ interface DrawingAreaProps {
 const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
   ({ shapes, onDrop, onShapesChange }, ref) => {
     const canvasRef = ref as React.RefObject<HTMLDivElement>
-    const { selectedShape, setSelectedShape,onDuplicate } = useStyle()
+    const { selectedShape, setSelectedShape, onDuplicate } = useStyle()
     const [contextMenu, setContextMenu] = React.useState<{
       x: number
       y: number
     } | null>(null)
+
+    const xKeyPressed = useRef(false)
 
     useEffect(() => {
       if (!canvasRef.current) return
@@ -41,7 +42,6 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         svg.remove()
       }
     }, [canvasRef])
-  
 
     useEffect(() => {
       if (!canvasRef.current) return
@@ -54,20 +54,51 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .on('start', (event, d) => {
           d3.select(event.sourceEvent.target).raise()
           setSelectedShape(d)
+          window.addEventListener('keydown', handleKeyDown)
+          window.addEventListener('keyup', handleKeyUp)
         })
         .on('drag', (event, d) => {
-          const newShapes = shapes.map((shape) => {
-            if (shape.id === d.id) {
-              return {
-                ...shape,
-                x: event.x,
-                y: event.y,
+          if (xKeyPressed.current) {
+            const newShapes = shapes.map((shape) => {
+              if (shape.id === d.id) {
+                return {
+                  ...shape,
+                  y: event.y,
+                }
               }
-            }
-            return shape
-          })
-          onShapesChange(newShapes)
+              return shape
+            })
+            onShapesChange(newShapes)
+          } else {
+            const newShapes = shapes.map((shape) => {
+              if (shape.id === d.id) {
+                return {
+                  ...shape,
+                  x: event.x,
+                  y: event.y,
+                }
+              }
+              return shape
+            })
+            onShapesChange(newShapes)
+          }
         })
+        .on('end', () => {
+          window.removeEventListener('keydown', handleKeyDown)
+          window.removeEventListener('keyup', handleKeyUp)
+          xKeyPressed.current = false
+        })
+      function handleKeyDown(event: KeyboardEvent) {
+        if (event.key === 'x') {
+          xKeyPressed.current = true
+        }
+      }
+
+      function handleKeyUp(event: KeyboardEvent) {
+        if (event.key === 'x') {
+          xKeyPressed.current = false
+        }
+      }
 
       svg
         .selectAll('rect.parkingSpot')
@@ -145,7 +176,7 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
 
@@ -174,8 +205,8 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
-         
+          setContextMenu({ x: event.clientX, y: event.clientY })
+
           setSelectedShape(d)
         })
 
@@ -249,8 +280,15 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .style('border-right', '2px solid black')
         .style('border-top', '2px solid black')
         .style('border-bottom', '2px solid black')
-        .style('transform', (d) => d.isFliped ? 'rotateY(180deg)' : 'rotateY(0deg)')
-        .html((d) => `<span style="transform: ${d.isFliped ? 'rotateY(180deg)' : 'rotateY(0deg)'};">${d.shape.spotNumber}</span>`)
+        .style('transform', (d) =>
+          d.isFliped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+        )
+        .html(
+          (d) =>
+            `<span style="transform: ${
+              d.isFliped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+            };">${d.shape.spotNumber}</span>`
+        )
 
       svg
         .selectAll('rect.overlay.spotNumber')
@@ -267,7 +305,7 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
 
@@ -294,7 +332,7 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
 
@@ -312,7 +350,7 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
       svg
@@ -428,7 +466,7 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(rectDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
       //end road
@@ -450,6 +488,58 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
           default:
             return ''
         }
+      }
+
+      svg
+        .selectAll('circle.selected')
+        .data(shapes.filter((shape) => shape.id === selectedShape?.id))
+        .enter()
+        .append('circle')
+        .attr('class', 'selected')
+        .attr('cx', (d) => d.x + calcXSelectedSpace())
+        .attr('cy', (d) => d.y + calcYSelectedSpace())
+        .attr('r', 5)
+        .attr('fill', (d) => (d.shape.type === 'wasteBin' ? 'white' : 'black'))
+        .attr('stroke', 'none')
+
+      function calcXSelectedSpace() {
+        if (!selectedShape) {
+          return 0
+        }
+        if (selectedShape.shape.type === 'wasteBin') {
+          return 50
+        }
+        if (selectedShape.shape.type === 'parkingSpot') {
+          if (selectedShape.isFliped) {
+            return 30
+          }
+          return -30
+        }
+        if (selectedShape.shape.type === 'spotNumber') {
+          if (selectedShape.isFliped) {
+            return -13
+          }
+          return 40
+        }
+        return 50
+      }
+      function calcYSelectedSpace() {
+        if (!selectedShape) {
+          return 0
+        }
+        if (selectedShape.shape.type === 'wasteBin') {
+          return 2
+        }
+        if (selectedShape.shape.type === 'parkingSpot') {
+          if (selectedShape.isFliped) {
+            return -19
+          }
+          return -18
+        }
+        if (selectedShape.shape.type === 'spotNumber') {
+          return selectedShape.height ? selectedShape.height / 2 + 5 : 24
+        }
+        return 0
       }
 
       const textDrag = d3
@@ -487,12 +577,10 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
         .call(textDrag)
         .on('contextmenu', (event, d) => {
           event.preventDefault()
-          setContextMenu({ x: event.clientX, y: event.clientY });
+          setContextMenu({ x: event.clientX, y: event.clientY })
           setSelectedShape(d)
         })
     }, [shapes, canvasRef, selectedShape, onShapesChange])
-
- 
 
     return (
       <div
@@ -507,7 +595,6 @@ const DrawingArea = forwardRef<HTMLDivElement, DrawingAreaProps>(
             y={contextMenu.y}
             onDuplicate={onDuplicate}
             onClose={() => setContextMenu(null)}
-            
           />
         )}
       </div>

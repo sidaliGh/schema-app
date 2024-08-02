@@ -8,13 +8,17 @@ import { useStyle } from './context/StyleContext'
 import styles from './App.module.scss'
 import { Shape, ShapeProperties } from './types/types'
 
-
-
 const App: React.FC = () => {
-  const { shapes, setShapes, handleUndo, handleRedo, pushUndo } = useStyle()
+  const {
+    shapes,
+    setShapes,
+    handleUndo,
+    handleRedo,
+    pushUndo,
+    postionAsPrevToTop,
+    postionAsPrevToBottom
+  } = useStyle()
   const canvasRef = useRef<HTMLDivElement>(null)
-
-
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
@@ -26,25 +30,62 @@ const App: React.FC = () => {
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
-    
+
     const shapeString = event.dataTransfer.getData('shape')
     const shape = JSON.parse(shapeString) as ShapeProperties
- 
 
     if (!canvasRef.current) return
 
     const canvasRect = canvasRef.current.getBoundingClientRect()
-    const x = event.clientX - canvasRect.left
-    const y = event.clientY - canvasRect.top
+    let x = 0;
+let y = 0;
+    if (postionAsPrevToTop && shapes.length > 0) {
+      if (shapes[shapes.length - 1].shape.type === 'wasteBin') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y - 53
+      }
+      if (shapes[shapes.length - 1].shape.type === 'parkingSpot') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y - 38
+        
+      }
+      if (shapes[shapes.length - 1].shape.type === 'spotNumber') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y - 50
+        
+      }
+    } 
+    if (postionAsPrevToBottom && shapes.length > 0) {
+      if (shapes[shapes.length - 1].shape.type === 'wasteBin') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y + 53
+      }
+      if (shapes[shapes.length - 1].shape.type === 'parkingSpot') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y + 38
+        
+      }
+      if (shapes[shapes.length - 1].shape.type === 'spotNumber') {
+        x = shapes[shapes.length - 1].x
+        y = shapes[shapes.length - 1].y + 50
+        
+      }
+    }
+    else {
+      x = event.clientX - canvasRect.left
+      y = event.clientY - canvasRect.top
+    }
 
     pushUndo(shapes)
-    const newShape: Shape = { id: uuidv4(), shape: shape, x, y }
+    let newShape: Shape 
+    if((shape.type === "parkingSpot" || shape.type === "spotNumber") && (postionAsPrevToTop || postionAsPrevToBottom)){
+      newShape = { id: uuidv4(), shape: shape, x, y, isFliped: shapes[shapes.length -1].isFliped ? true : false }
+    }
+    else {
+      newShape = { id: uuidv4(), shape: shape, x, y }
+    }
     setShapes([...shapes, newShape])
   }
-
-  
-
-
 
   const handleAddText = (text: string) => {
     if (!canvasRef.current) return
@@ -55,13 +96,16 @@ const App: React.FC = () => {
 
     pushUndo(shapes)
     const newShape: Shape = {
-      id: uuidv4(),  x, y, text,
+      id: uuidv4(),
+      x,
+      y,
+      text,
       shape: {
         name: '',
         type: 'Text',
         color: '',
-        icon: ''
-      }
+        icon: '',
+      },
     }
     setShapes([...shapes, newShape])
   }
