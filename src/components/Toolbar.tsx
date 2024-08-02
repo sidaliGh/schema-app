@@ -12,6 +12,7 @@ const Toolbar: React.FC<{ onUndo: () => void; onRedo: () => void; }> = ({ onUndo
           <div>
             <input
               type="checkbox"
+              disabled={postionAsPrevToBottom}
               checked={postionAsPrevToTop}
               onChange={(e) => updatePositionAsPrevToTheTop(e.target.checked)}
             />
@@ -20,6 +21,7 @@ const Toolbar: React.FC<{ onUndo: () => void; onRedo: () => void; }> = ({ onUndo
           <div>
           <input
             type="checkbox"
+            disabled={postionAsPrevToTop}
             checked={postionAsPrevToBottom}
             onChange={(e) => updatePositionAsPrevToTheBottom(e.target.checked)}
           />
